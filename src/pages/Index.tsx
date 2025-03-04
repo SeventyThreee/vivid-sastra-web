@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { MapPin, Navigation, Search } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 // Define the structure of a location card
 interface LocationCard {
@@ -12,6 +13,7 @@ interface LocationCard {
 }
 
 const Index = () => {
+  const navigate = useNavigate();
   const [isLoaded, setIsLoaded] = useState(false);
   const [activeCard, setActiveCard] = useState<number | null>(null);
   
@@ -44,12 +46,15 @@ const Index = () => {
   };
 
   // Function to handle card click
-  const handleCardClick = (id: number) => {
+  const handleCardClick = (id: number, colorClass: string) => {
     setActiveCard(id);
     
-    // Reset active card after animation completes
+    // Get color name without the "bg-" prefix
+    const colorName = colorClass.replace('bg-', '');
+    
+    // Animate and then navigate after animation completes
     setTimeout(() => {
-      setActiveCard(null);
+      navigate(`/location/${id}/${colorName}`);
     }, 300);
   };
 
@@ -86,7 +91,7 @@ const Index = () => {
               key={card.id}
               className={`location-card rounded-card p-4 flex items-center justify-between ${card.color} ${isLoaded ? 'animate-fade-in' : 'opacity-0'} ${activeCard === card.id ? 'animate-scale-pop' : ''}`}
               style={{ animationDelay: `${index * 0.1}s` }}
-              onClick={() => handleCardClick(card.id)}
+              onClick={() => handleCardClick(card.id, card.color)}
             >
               <div className="flex flex-col">
                 <div className={`${card.color} bg-opacity-60 backdrop-blur-sm text-black rounded-md px-3 py-1 mb-2 w-fit`}>
